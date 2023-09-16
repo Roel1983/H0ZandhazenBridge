@@ -6,34 +6,36 @@ X = 0;
 Y = 1;
 Z = 2;
 
-mortise_config = mortise_config();
+//TODO reenforcment
+mortise_config = mortise_config(r=50);
 
-!difference() {
-    translate([-7, -3, 0.01])cube([14, 6, 22]);
+%render()difference() {
+    translate([-9.5, 0.1, -1])cube([17, 22, 8]);
     MortiseAndTenon("mortise", mortise_config);
 }
 
-!union() {
+render() union() {
     MortiseAndTenon("tenon", mortise_config);
-    rotate(180, [0,1,0]) MortiseAndTenon("tenon", mortise_config);
+    mirror([0,1,0])MortiseAndTenon("tenon", mortise_config);
 }
 
 //
 function mortise_config(
     length           = 20,
     width_1          = 10,
-    width_2          =  8,
-    thickness        = 5,
+    width_2          =  7,
+    thickness_1      = 6,
+    thickness_2      = 4,
     notch            = [1.5, 0.2],
-    tight_length     = 8,
+    tight_length     = 6,
     bevel            =  1,
     r                = undef,
-    tolerance_lenght = .5,
-    tolerance_side   = 0.1,
-    tolerance_bottom = 0.05,
-    tolerance_top    = 1.0,
-    tolerance_bevel  = 0.15
-) = [tolerance_lenght, length, width_1, width_2, thickness, notch, tight_length, bevel, r,
+    tolerance_lenght = .2,
+    tolerance_side   = -0.0,
+    tolerance_bottom =  0.0,
+    tolerance_top    =  1.0,
+    tolerance_bevel  = -.1
+) = [tolerance_lenght, length, width_1, width_2, thickness_1, thickness_2, notch, tight_length, bevel, r,
     tolerance_side, tolerance_bottom, tolerance_top, tolerance_bevel
 ];
 
@@ -47,17 +49,18 @@ module MortiseAndTenon(
     length       = mortise_config[1];
     width_1      = mortise_config[2];
     width_2      = mortise_config[3];
-    thickness    = mortise_config[4];
-    notch        = mortise_config[5];
-    tight_length = mortise_config[6];
-    bevel        = mortise_config[7];
-    r            = mortise_config[8];
-    tolerance_side   = mortise_config[ 9];
-    tolerance_bottom = mortise_config[10];
-    tolerance_top    = mortise_config[11];
-    tolerance_bevel  = mortise_config[12];
+    thickness_1  = mortise_config[4];
+    thickness_2  = mortise_config[5];
+    notch        = mortise_config[6];
+    tight_length = mortise_config[7];
+    bevel        = mortise_config[8];
+    r            = mortise_config[9];
+    tolerance_side   = mortise_config[10];
+    tolerance_bottom = mortise_config[11];
+    tolerance_top    = mortise_config[12];
+    tolerance_bevel  = mortise_config[13];
     
-    r_error = min(tolerance_side, tolerance_bevel) / ($preview ? 1 : 10);
+    r_error = width_1 / ($preview ? 100 : 1000);
     echo(r_error);
     mortise_offsets = offsets(
         side   = 0,
@@ -77,15 +80,16 @@ module MortiseAndTenon(
         length       = length,
         width_1      = width_1,
         width_2      = width_2,
-        thickness    = thickness,
-        notch        = notch,
+        thickness_1  = thickness_1,
+        thickness_2  = thickness_2,
+        notch        = [notch[0], notch[1] * ((part == "tenon") ? 1.5 : 1)],
         tight_length = tight_length,
         bevel        = bevel,
         offsets      = part == "mortise" ? mortise_offsets : tenon_offsets,
         r            = r,
         r_error      = r_error
     );
-    render() difference() {
+    rotate(180) rotate(90, [1,0,0]) render() difference() {
         polyhedron(points = points, faces = faces(points));
         if(part == "tenon") SlideSlots();
     }
@@ -125,7 +129,7 @@ module MortiseAndTenon(
         bevel 
     ];
     function mortise_points(
-        z_tolerance, length, width_1, width_2, thickness, notch, tight_length, bevel, offsets, r, r_error
+        z_tolerance, length, width_1, width_2, thickness_1, thickness_2, notch, tight_length, bevel, offsets, r, r_error
     ) = let(
         fs = (
             is_undef(r) ? undef : (
@@ -140,17 +144,17 @@ module MortiseAndTenon(
         q = length - bevel - tight_length / 2,
         z_width_and_offset_sides = concat(
             [
-                [0,                                           width_1, 0],
-                [z_tolerance + tight_length,                  width_1, 0],
-                [z_tolerance + length - bevel - tight_length, width_2, 0]
+                [0,                                           width_1,         0,        thickness_1],
+                [z_tolerance + tight_length,                  width_1,         0,        thickness_1],
+                [z_tolerance + length - bevel - tight_length, width_2,         0,        thickness_2]
             ], is_undef(notch) ? [] : [
-                [q - notch[0] / 2 - 2 * notch[1],             width_2, 0],
-                [q - notch[0] / 2,                            width_2, notch[1]],
-                [q + notch[0] / 2,                            width_2, notch[1]],
-                [q + notch[0] / 2 + 2 * notch[1],             width_2, 0]
+                [q - notch[0] / 2 - 2 * notch[1],             width_2,         0,        thickness_2],
+                [q - notch[0] / 2,                            width_2,         notch[1], thickness_2],
+                [q + notch[0] / 2,                            width_2,         notch[1], thickness_2],
+                [q + notch[0] / 2 + 2 * notch[1],             width_2,         0,        thickness_2]
             ], [
-                [z_tolerance + length - bevel,                width_2, 0],
-                [z_tolerance + length,                        width_2 - bevel, 0]
+                [z_tolerance + length - bevel,                width_2,         0,        thickness_2],
+                [z_tolerance + length,                        width_2 - bevel, 0,        thickness_2]
             ]
         )
     ) bend_points_3d(
@@ -164,7 +168,8 @@ module MortiseAndTenon(
                     width_to         = z_width_and_offset_sides[i + 1][1],
                     offset_side_from = z_width_and_offset_sides[i    ][2],
                     offset_side_to   = z_width_and_offset_sides[i + 1][2],
-                    thickness        = thickness,
+                    thickness_from   = z_width_and_offset_sides[i    ][3],
+                    thickness_to     = z_width_and_offset_sides[i + 1][3],
                     offsets          = offsets,
                     fs = fs,
                     skip_first_ring = (i!=0))
@@ -174,16 +179,17 @@ module MortiseAndTenon(
 
     // Calculate the 3d points of a section
     function section_points_3d(
-        z_from, z_to, width_from, width_to, offset_side_from, offset_side_to, thickness, offsets, fs, skip_first_ring
+        z_from, z_to, width_from, width_to, offset_side_from, offset_side_to, thickness_from, thickness_to, offsets, fs, skip_first_ring
     ) = (let(
             steps = is_undef(fs) ? 1 : ceil(max(1, abs(z_from - z_to) / fs))
         ) [
             each for (step = [(skip_first_ring?1:0):steps]) (
                 let(
-                    f     = steps > 0 ? step / steps : 0,
-                    z     = z_from  * (1 - f) + z_to * f,
-                    width = width_from * (1 - f) + width_to * f,
+                    f           = steps > 0 ? step / steps : 0,
+                    z           = z_from           * (1 - f) + z_to           * f,
+                    width       = width_from       * (1 - f) + width_to       * f,
                     offset_side = offset_side_from * (1 - f) + offset_side_to * f,
+                    thickness   = thickness_from   * (1 - f) + thickness_to   * f,
                     ps    = profile_points_2d(
                         width       = width,
                         thickness   = thickness,
@@ -212,15 +218,15 @@ module MortiseAndTenon(
             offset_bevel  = offsets[3],
             a = width / 2 ,
             b = a - (bevel - offset_bevel) / cos(bevel_angle) - offset_top * tan(bevel_angle),
-            c = thickness / 2,
+            c = thickness,
             d = c - (bevel - offset_bevel) / sin(bevel_angle) - offset_side2 / tan(bevel_angle)
         )[
-            [ a + offset_side2, -c - offset_bottom],
+            [ a + offset_side2, 0 - offset_bottom],
             [ a + offset_side2,  d],
             [ b,  c + offset_top],
             [-b,  c + offset_top],
             [-a - offset_side2,  d],
-            [-a - offset_side2,  -c - offset_bottom]
+            [-a - offset_side2,  0 - offset_bottom]
         ]
     );
     
@@ -230,6 +236,7 @@ module MortiseAndTenon(
         [each for (i = [0 : 6 : len(points) - 7])[
             [i + 0, i +  6, i +  7, i + 1],
             [i + 1, i +  7, i +  8, i + 2],
+            [i + 2, i +  8, i +  9, i + 3],
             [i + 3, i +  9, i + 10, i + 4],
             [i + 4, i + 10, i + 11, i + 5],
         ]],
@@ -237,10 +244,6 @@ module MortiseAndTenon(
         [concat(
             [for (i = [len(points)-6:-6:0]) i],
             [for (i = [5:6:len(points)-1]) i]
-        )],
-        [concat(
-            [for (i = [2:6:len(points)-1]) i],
-            [for (i = [len(points)-3:-6:1]) i]
         )]
     );
 }
