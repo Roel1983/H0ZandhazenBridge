@@ -1,74 +1,27 @@
-// Constants
-X = 0;
-Y = 1;
-Z = 2;
+include <Utils.inc>
+include <Bridge.inc>
 
-VEC_X = [1,0,0];
-VEC_Y = [0,1,0];
-VEC_Z = [0,0,1];
+Bridge();
+Heads();
 
-E = 2.7182818284;
+module Bridge() {
+    Report();
+    color("white")    Arches();
+    color("white")    ArchSeparatorBeams();
+    color("SteelBlue")CrossBeams();
+    color("white")    Cables();
+    color("DimGray")  Deck();
+}
 
-SCALE = 1/283.34;
-
-// Util functions
-function round_decimals(x, decimal = 4, base = 10) = (
-    let(k = pow(base, ceil(ln(x) / ln(base)) - decimal))
-    round(x / k) * k
-);
-
-// Units
-function mm(x)     = x;
-function cm(x)     = x * mm(10);
-function m(x)      = x * mm(1000);
-function nozzle(x) = x * mm(0.4);
-
-function scaled(x)   = x * SCALE;
-function unscaled(x) = x / SCALE;
-
-function as_string1(x) = (
-    (x < 100)
-    ? str(x / mm(1), "mm")
-    : (x < 1000)
-    ? str(x / cm(1), "cm")
-    : str(x / m(1), "m")
-);
-function as_string(x) = str(
-    as_string1(round_decimals(x)),
-    " (", as_string1(round_decimals(unscaled(x))), ")"
-);
-
-// Dimentions
-bridge_length                = scaled(m(255));
-bridge_width                 = scaled(m( 18));
-bridge_arch_distance_bottom  = scaled(m( 20));
-bridge_arch_distance_top     = scaled(m(  3));
-
-bridge_arch_catenary_a       = 1.3866;
-bridge_arch_width            = scaled(m(4));
-bridge_arch_thickness_top    = scaled(m(4));
-bridge_arch_thickness_bottom = scaled(m(5));
-
-bridge_beam_locations        = [-3/5, -1/5, 1/5, 3/5];
-bridge_beam_indent           = scaled(m(.5));
-
-bridge_cross_beam_width      = scaled(m(4.0));
-bridge_cross_beam_height     = scaled(m(4.7));
-
-bridge_deck_thickness        = mm( 4.0);
-bridge_deck_indent           = mm( 5.0);
-bridge_deck_rim_thickness    = mm( 1.5);
-
-bridge_cable_count           = 12;
-bridge_cable_distance1       = bridge_length / 8;
-bridge_cable_distance2       = scaled(m(3.0));
-bridge_cable_diameter        = mm(3.0);
-
-bridge_head_length           = cm(5);
-
-// Catenary curve
-function cosh(x)        = (pow(E, x) + pow(E, -x)) / 2;
-function catenary(x, a) = a * cosh(x / a);
+module Heads() {
+    color("SaddleBrown", alpha = 0.25) {
+        mirror_copy(VEC_X) {
+            translate([bridge_length /2 + bridge_head_length, 0, -bridge_head_length/2]) {
+                cube([2 * bridge_head_length, bridge_bounding_width * 1.5, bridge_head_length],true);
+            }
+        }
+    }
+}
 
 // Arch functions
 function bridge_arch_point_1(i) = [
@@ -107,7 +60,6 @@ function bridge_arch_inner_center_distance(i) = (
     bridge_arch_distance_top * j + bridge_arch_distance_bottom * (1 - j) + bridge_arch_width
 );
 
-
 // Arch separator beam functions
 bridge_beam_count     = len(bridge_beam_locations);
 function arch_separator_beam_position(beam_nr) = (
@@ -132,12 +84,16 @@ function cable_bottom_position(cable_nr) = [
     (bridge_width + bridge_cross_beam_width) / 2,
     bridge_cross_beam_top / 2
 ];
-function cable_top_position(cable_nr) = (
+function cable_top_position_i(cable_nr) = (
     let(
         ix = -bridge_cable_distance1 * (bridge_cable_count - 2) / 4 +
             bridge_cable_distance1 * floor (cable_nr / 2) + 
-            (bridge_cable_distance1 - bridge_cable_distance2) * (((cable_nr % 2) == 0) ? -.5 : .5),
-        i  = 2 * ix / bridge_length,
+            (bridge_cable_distance1 - bridge_cable_distance2) * (((cable_nr % 2) == 0) ? -.5 : .5)
+    ) 2 * ix / bridge_length
+);
+function cable_top_position(cable_nr) = (
+    let(
+        i = cable_top_position_i(cable_nr),
         xz = bridge_arch_inner_point(i)
         
     ) [
@@ -187,26 +143,6 @@ module cable_top_transpose(cable_nr) {
     }
 }
 
-// Derived
-bridge_height          = bridge_arch_outer_point(i = 0)[Y];
-bridge_bounding_width  = bridge_arch_distance_bottom  + 2 * bridge_arch_width;
-bridge_bounding_length = bridge_length + 2 * bridge_head_length;
-bridge_arch_overhang   = (bridge_arch_distance_bottom - bridge_arch_distance_top) / 2;
-bridge_arch_angle      = atan(bridge_height / bridge_arch_overhang);
-bridge_cross_beam_bottom = -bridge_deck_thickness - bridge_deck_rim_thickness;
-bridge_cross_beam_top = bridge_cross_beam_height -bridge_deck_thickness - bridge_deck_rim_thickness;
-
-// Construct
-hide_bridge = false;
-if (!hide_bridge) {
-    Report();
-    Arches();
-    ArchSeparatorBeams();
-    CrossBeams();
-    Cables();
-    %Deck();
-}
-
 module Report() {
     function calc_cable_stats(cable_nr = 0) = (
         let(
@@ -229,15 +165,15 @@ module Report() {
     
     echo("---------------------------------------------");
     echo(str("Scale:            1/", round_decimals(1 / SCALE)));
-    echo(str("Bridge length:    ", as_string(bridge_length)));
-    echo(str("Bridge height:    ", as_string(bridge_height)));
+    echo(str("Bridge length:    ", length_to_string(bridge_length)));
+    echo(str("Bridge height:    ", length_to_string(bridge_height)));
     echo(str("Arch angle:       ", round_decimals(bridge_arch_angle), "°"));
-    echo(str("Cable diameter:   ", as_string(bridge_cable_diameter)));
-    echo(str("Shortest cable:   ", as_string(cable_stats[0])));
-    echo(str("Longest cable:    ", as_string(cable_stats[1])));
-    echo(str("Total cable:      ", as_string(cable_stats[2] * 2)));
-    echo(str("Bounding length:  ", as_string(bridge_bounding_length)));
-    echo(str("Bounding width:   ", as_string(bridge_bounding_width)));
+    echo(str("Cable diameter:   ", length_to_string(bridge_cable_diameter)));
+    echo(str("Shortest cable:   ", length_to_string(cable_stats[0])));
+    echo(str("Longest cable:    ", length_to_string(cable_stats[1])));
+    echo(str("Total cable:      ", length_to_string(cable_stats[2] * 2)));
+    echo(str("Bounding length:  ", length_to_string(bridge_bounding_length)));
+    echo(str("Bounding width:   ", length_to_string(bridge_bounding_width)));
     echo("---------------------------------------------");
 }
 
@@ -375,10 +311,4 @@ module Deck() {
             bridge_width + 2 * bridge_deck_indent
         ], center = true);
     }
-}
-// Utility
-
-module mirror_copy(vec) {
-    children();
-    mirror(vec) children();
 }

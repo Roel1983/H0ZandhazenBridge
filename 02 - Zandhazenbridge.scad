@@ -1,4 +1,4 @@
-include <01 - Zandhazenbridge.scad>
+include <Bridge.inc>
 
 arch_crossbeam_tolerance_xz = mm(0.1);
 arch_crossbeam_tolerance_y  = mm(0.1);
@@ -6,7 +6,7 @@ arch_crossbeam_tolerance_y  = mm(0.1);
 hide_bridge = true;
 
 Arch03();
-!CrossBeam03();
+CrossBeam03();
 
 module Arch02(offset_xz = 0, offset_y = 0) {
     difference() {
@@ -72,8 +72,8 @@ module Arch03() {
    
 }
 module CrossBeam03() {
-    difference() {
-        CrossBeam02();
+    //difference() {
+        %CrossBeam02();
         for(cable_nr = [0:bridge_cable_count-1]) {
             cable_bottom_transpose(cable_nr) {
                 mirror(VEC_Z) translate([0,0,-3.2]) cylinder(d=6.3, h=26, $fn = 32);
@@ -88,7 +88,7 @@ module CrossBeam03() {
                 }
             }
         }
-    }
+    //}
 }
 
 module Hex(d) {
