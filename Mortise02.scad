@@ -1,67 +1,98 @@
-//difference() {
-//    polygon(profile_points_2d());
-//};
-
 X = 0;
 Y = 1;
 Z = 2;
 
 //TODO reenforcment
-mortise_config = mortise_config(r=50);
+mortise_config = mortise_config(r=undef);
 
 %render()difference() {
     translate([-9.5, 0.1, -1])cube([17, 22, 8]);
-    MortiseAndTenon("mortise", mortise_config);
+    MortiseAndTenon("mortise", mortise_config(mortise_config, r=50));
 }
 
 render() union() {
-    MortiseAndTenon("tenon", mortise_config);
+    MortiseAndTenon("tenon", mortise_config(mortise_config, r=50));
     mirror([0,1,0])MortiseAndTenon("tenon", mortise_config);
 }
 
-//
+function is_def(v) = !is_undef(v);
+function config_value(index, config1, config2, value) = (
+    (is_def(value)) ? (
+        value
+    ) : (is_def(config1[index])) ? (
+        config1[index]
+    ) : (
+        config2[index]
+    )
+);
+
+
 function mortise_config(
-    length           = 20,
-    width_1          = 10,
-    width_2          =  7,
-    thickness_1      = 6,
-    thickness_2      = 4,
-    notch            = [1.5, 0.2],
-    tight_length     = 6,
-    bevel            =  1,
-    r                = undef,
-    tolerance_lenght = .2,
-    tolerance_side   = -0.0,
-    tolerance_bottom =  0.0,
-    tolerance_top    =  1.0,
-    tolerance_bevel  = -.1
-) = [tolerance_lenght, length, width_1, width_2, thickness_1, thickness_2, notch, tight_length, bevel, r,
+    config1, config2,
+    tolerance_lenght, length, width_1, width_2, thickness_1, thickness_2, notch, tight_length, bevel, r,
     tolerance_side, tolerance_bottom, tolerance_top, tolerance_bevel
+) = [
+    config_value( 0, config1, config2, tolerance_lenght),    
+    config_value( 1, config1, config2, length),
+    config_value( 2, config1, config2, width_1),
+    config_value( 3, config1, config2, width_2),
+    config_value( 4, config1, config2, thickness_1),
+    config_value( 5, config1, config2, thickness_2),
+    config_value( 6, config1, config2, notch),
+    config_value( 7, config1, config2, tight_length),
+    config_value( 8, config1, config2, bevel),
+    config_value( 9, config1, config2, r),
+    config_value(10, config1, config2, tolerance_side),
+    config_value(11, config1, config2, tolerance_bottom),
+    config_value(12, config1, config2, tolerance_top),
+    config_value(13, config1, config2, tolerance_bevel)
 ];
+default_mortise_config = mortise_config(
+    tolerance_lenght =   0.2,    
+    length =            20.0,
+    width_1 =           10.0,
+    width_2 =            7.0,
+    thickness_1 =        6.0,
+    thickness_2 =        4.0,
+    notch =             [1.5, 0.2],
+    tight_length =       6.0,
+    bevel =              1.0,
+    r =                  undef,
+    tolerance_side =    -0.0,
+    tolerance_bottom =   0.0,
+    tolerance_top =      1.0,
+    tolerance_bevel =   -0.1
+);
+echo(mortise_config(default_mortise_config, r = 10));
 
 module MortiseAndTenon(
-    part = "mortise",
-    mortise_config = mortise_config()
+    part   = "mortise",
+    config = mortise_config()
 ) {
     assert(part == "mortise" || part == "tenon", "'part' must be either \"mortise\" or \"tenon\"");
 
-    z_tolerance  = part == "tenon" ? -mortise_config[0] : 0;
-    length       = mortise_config[1];
-    width_1      = mortise_config[2];
-    width_2      = mortise_config[3];
-    thickness_1  = mortise_config[4];
-    thickness_2  = mortise_config[5];
-    notch        = mortise_config[6];
-    tight_length = mortise_config[7];
-    bevel        = mortise_config[8];
-    r            = mortise_config[9];
-    tolerance_side   = mortise_config[10];
-    tolerance_bottom = mortise_config[11];
-    tolerance_top    = mortise_config[12];
-    tolerance_bevel  = mortise_config[13];
+    effective_config = mortise_config(config1 = config, config2 = default_mortise_config);
+    function get_config(index, allow_undef=false) = (
+        let(v = effective_config[index])
+        assert(allow_undef || !is_undef(v), str("config with index ", index, " not defined"))
+        v
+    );
+    z_tolerance  = part == "tenon" ? -get_config(0) : 0;
+    length       = get_config(1);
+    width_1      = get_config(2);
+    width_2      = get_config(3);
+    thickness_1  = get_config(4);
+    thickness_2  = get_config(5);
+    notch        = get_config(6);
+    tight_length = get_config(7);
+    bevel        = get_config(8);
+    r            = get_config(9, allow_undef = true);
+    tolerance_side   = get_config(10);
+    tolerance_bottom = get_config(11);
+    tolerance_top    = get_config(12);
+    tolerance_bevel  = get_config(13);
     
     r_error = width_1 / ($preview ? 100 : 1000);
-    echo(r_error);
     mortise_offsets = offsets(
         side   = 0,
         bottom = 0,

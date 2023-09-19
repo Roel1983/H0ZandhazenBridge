@@ -38,6 +38,7 @@ bridge_bounding_width    = bridge_arch_distance_bottom  + 2 * bridge_arch_width;
 bridge_bounding_length   = bridge_length + 2 * bridge_head_length;
 bridge_arch_overhang     = (bridge_arch_distance_bottom - bridge_arch_distance_top) / 2;
 bridge_arch_angle        = atan(bridge_height / bridge_arch_overhang);
+bridge_beam_count        = len(bridge_beam_locations);
 bridge_cross_beam_bottom = -bridge_deck_thickness - bridge_deck_rim_thickness;
 bridge_cross_beam_top    = bridge_cross_beam_height -bridge_deck_thickness - bridge_deck_rim_thickness;
 cross_beam_center_center_distance = bridge_width + bridge_cross_beam_width;

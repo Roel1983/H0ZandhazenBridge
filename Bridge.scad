@@ -4,13 +4,21 @@ include <Bridge.inc>
 Bridge();
 Heads();
 
-module Bridge() {
+module Bridge(colored = true) {
     Report();
-    color("white")    Arches();
-    color("white")    ArchSeparatorBeams();
-    color("SteelBlue")CrossBeams();
-    color("white")    Cables();
-    color("DimGray")  Deck();
+    Color("white")    Arches();
+    Color("white")    ArchSeparatorBeams();
+    Color("SteelBlue")CrossBeams();
+    Color("white")    Cables();
+    Color("DimGray")  Deck();
+    
+    module Color(c) {
+        if (colored) {
+            color(c) children();
+        } else {
+            children();
+        }
+    }
 }
 
 module Heads() {
@@ -61,7 +69,6 @@ function bridge_arch_inner_center_distance(i) = (
 );
 
 // Arch separator beam functions
-bridge_beam_count     = len(bridge_beam_locations);
 function arch_separator_beam_position(beam_nr) = (
     let(p = bridge_arch_center_point(bridge_beam_locations[beam_nr]))
     [p[X], 0, p[Y]]
@@ -183,31 +190,26 @@ module Arches() {
     }
 }
 
-module Arch(
-    offset_xz = 0, offset_y = 0
-) {
+module Arch(offset_xz = 0, offset_y = 0) {
     intersection() {
-        rotate(90, VEC_X) {
-            linear_extrude(
-                bridge_bounding_width * 1.1, center = true, convexity = 2
-            ) {
-                ArchSideView();
-            }
-        }
-        rotate(90, VEC_Y) rotate(90) {
-            linear_extrude(
-                bridge_bounding_length,
-                center = true,
-                convexity = 2
-            ) {
-                ArchFrontView();
-            }
+        ArchSideViewExtruded(offset_xz = offset_xz, offset_y = offset_y);
+        ArchFrontViewExtruded(offset_xz = offset_xz, offset_y = offset_y);
+    }
+}
+module ArchFrontViewExtruded(offset_xz = 0, offset_y = 0) {
+    rotate(90, VEC_Y) rotate(90) {
+        linear_extrude(
+            bridge_bounding_length,
+            center = true,
+            convexity = 2
+        ) {
+            ArchFrontView(offset_xz = offset_xz, offset_y = 0);
         }
     }
     
-    module ArchFrontView() {
+    module ArchFrontView(offset_xz = 0, offset_y = 0) {
         length = norm([bridge_height, bridge_arch_overhang]);
-    
+
         mirror(VEC_X) {
             translate([-bridge_arch_distance_bottom / 2, 0]) {
                 rotate(bridge_arch_angle) {
@@ -218,7 +220,16 @@ module Arch(
             }
         }
     }
+}
 
+module ArchSideViewExtruded(offset_xz = 0, offset_y = 0) {
+    rotate(90, VEC_X) {
+        linear_extrude(
+            bridge_bounding_width * 1.1, center = true, convexity = 2
+        ) {
+            ArchSideView();
+        }
+    }
     module ArchSideView() {
         f = 1.05;
         g = bridge_arch_outer_point(f)[X];
@@ -238,13 +249,13 @@ module ArchSeparatorBeams() {
     for (i = [0:bridge_beam_count-1]) {
         ArchSeparatorBeam(i);
     }
-    module ArchSeparatorBeam(beam_nr) {
-        translate(arch_separator_beam_position(beam_nr)) {
-            rotate(-bridge_arch_separator_beam_angle(beam_nr), VEC_Y) {
-                d = bridge_arch_separator_beam_diameter(beam_nr);
-                l = bridge_arch_separator_beam_length(beam_nr);
-                cube([d, l, d], true);
-            }
+}
+module ArchSeparatorBeam(beam_nr) {
+    translate(arch_separator_beam_position(beam_nr)) {
+        rotate(-bridge_arch_separator_beam_angle(beam_nr), VEC_Y) {
+            d = bridge_arch_separator_beam_diameter(beam_nr);
+            l = bridge_arch_separator_beam_length(beam_nr);
+            cube([d, l, d], true);
         }
     }
 }

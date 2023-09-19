@@ -43,6 +43,9 @@ function catenary(x, a) = a * cosh(x / a);
 function between(from, to, f = 0.5) = (
     to * f + from * (1 - f)
 );
+function is_between(i, range) = (
+    i >= range[0] && i < range[1]
+);
 // Modifiers
 module mirror_copy(vec) {
     children();

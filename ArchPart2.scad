@@ -2,10 +2,10 @@ use<BridgeSegments.scad>
 include <Bridge.inc>
 use <PrintBed.scad>
 
-CrossBeamPart0(true);
+ArchPart2(true);
 
-module CrossBeamPart0(printable = false, exploded_view = 0.0) {
-    CROSS_BEAM_NUMBER = 0;
+module ArchPart2(printable = false, exploded_view = 0.0) {
+    CROSS_BEAM_NUMBER = 2;
     
     if(printable) {
         echo("QUANTITY");
@@ -20,21 +20,19 @@ module CrossBeamPart0(printable = false, exploded_view = 0.0) {
         echo("  Solid top layers    : 8");
         echo("  Modifiers           : TODO reenforcment");
         
-        translate([mm(-25), mm(-10), bridge_cross_beam_width / 2]) rotate(35, VEC_Z) {
-            rotate(90, VEC_X) {
-                translate(-cross_beam_segment_center(CROSS_BEAM_NUMBER)) {
-                    Part();
-                }
+        translate([mm(0),mm(10), bridge_arch_width / 2]) rotate(0) {
+            rotate(bridge_arch_angle - 180, VEC_X) {
+                translate(-arch_segment_center(CROSS_BEAM_NUMBER)) Part();
             }
         }
         PrintBed();
     } else {
-        Part();
+        translate(arch_segment_explode_displacement(CROSS_BEAM_NUMBER, exploded_view)) {
+            Part();
+        }
     }
     
     module Part() {
-        translate(cross_beam_segment_explode_displacement(CROSS_BEAM_NUMBER, exploded_view)) {
-            CrossBeamSegment(CROSS_BEAM_NUMBER);
-        }
+        ArchSegment(CROSS_BEAM_NUMBER);
     }
 }
