@@ -16,6 +16,7 @@ module ArchPart4(printable = false, explode_displacement = 0.0) {
         echo("  Perimeters          : 3");
         echo("  Solid bottom layers : 8");
         echo("  Solid top layers    : 8");
+        echo("  pause to add nuts   : 13mm");
         echo("  Modifiers           : TODO reenforcment");
         
         translate([mm(0), mm(-5), bridge_arch_width / 2]) rotate(32) {

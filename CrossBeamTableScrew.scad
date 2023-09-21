@@ -32,15 +32,15 @@ module CrossBeamTableScrew(index) {
                     $fn=32;
                     translate([0,0,-size/2]) cylinder(d = size, h = size);
                     hull() {
-                        for (p=[[0,0,size/2],[size,0,size/2],[size,0,size/3], [0,0, size/4]]) translate(p) {
+                        for (p=[[0,0,size/2],[size,0,size/2],[size,0,size/4], [0,0, 0]]) translate(p) {
                             mirror(VEC_Z) {
-                                cylinder(d1 = size, d2 = size/2, h = size /4);
+                                cylinder(d1 = size, d2 = size/3, h = size /4);
                             }
                         }
                     }
                     hull() {
-                        cylinder(d = size/2, h = size, center = true);
-                        translate([size, 0]) cylinder(d = size/2, h = size, center = true);
+                        cylinder(d = size/3, h = size, center = true);
+                        translate([size, 0]) cylinder(d = size/3, h = size, center = true);
                     }
                 }
             }

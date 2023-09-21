@@ -16,6 +16,8 @@ module CrossBeamPart0(printable = false, explode_displacement = 0.0) {
         echo("  Perimeters          : 3");
         echo("  Solid bottom layers : 8");
         echo("  Solid top layers    : 8");
+        echo("  Brim                : yes");
+        echo("  Pause to add nuts   : ???");
         echo("  Modifiers           : TODO reenforcment");
         
         translate([mm(-5), mm(1), bridge_cross_beam_width / 2]) rotate(35, VEC_Z) {
