@@ -1,8 +1,8 @@
-include <Utils.inc>
-include <Bridge.inc>
-use <Mortise.scad>
-use <SegmentCutPosition.scad>
-use <BridgeSegments.scad>
+include <../../Misc/Utils.inc>
+use     <../../Misc/Mortise.scad>
+include <../../Bridge.inc>
+use     <../BridgeSegments.scad>
+use     <../SegmentCutPosition.scad>
 
 %Bridge(colored=false);
 ArchMortise(0);
@@ -61,4 +61,8 @@ module arch_mortise_transform(index) {
 function bridge_cross_beam_tenon_explode_displacement(index) = between(
     bridge_arch_segment_explode_displacement(index),
     bridge_arch_segment_explode_displacement(index + 1)
+);
+
+function bridge_arch_tenon_origin(index) = (
+    bridge_arch_segment_cut_location(index + 1)
 );

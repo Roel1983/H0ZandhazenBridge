@@ -1,12 +1,12 @@
-use<BridgeSegments.scad>
-use<SegmentCutPosition.scad>
-include <Bridge.inc>
-use <CrossBeamTenon.scad>
-use <CableAttachment.scad>
-use <CrossBeamArchScrew.scad>
-use <CrossBeamTableScrew.scad>
+include <../../Bridge.inc>
+use     <../BridgeSegments.scad>
+use     <../CableAttachment.scad>
+use     <../CrossBeamArchScrew.scad>
+use     <../SegmentCutPosition.scad>
+use     <CrossBeamTenon.scad>
+use     <CrossBeamTableScrew.scad>
 
-explode_displacement = 0;
+explode_displacement = 2;
 for (cross_beam_index = [0 : bridge_cross_beam_segment_count() - 1]) {
     CrossBeamPart(cross_beam_index, explode_displacement);
 }

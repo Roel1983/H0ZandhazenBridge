@@ -1,4 +1,4 @@
-include <Bridge.inc>
+include <../Bridge.inc>
 
 %Bridge(colored = false);
 

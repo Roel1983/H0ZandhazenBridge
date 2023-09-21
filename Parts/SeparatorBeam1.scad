@@ -1,7 +1,7 @@
-use<BridgeSegments.scad>
-include <Bridge.inc>
-use <PrintBed.scad>
-use <SeparatorBeam.scad>
+include <../Bridge.inc>
+use     <../Misc/PrintBed.scad>
+use     <../Bridge/BridgeSegments.scad>
+use     <../Bridge/SeparatorBeam/SeparatorBeam.scad>
 
 SeparatorBeam1(true);
 
@@ -13,6 +13,7 @@ module SeparatorBeam1(printable = false, explode_displacement = 0.0) {
         echo("  Quantity            : 2");
         echo("  Layer height        : 0.1 mm");
         echo("  Infill              : 10%");
+        echo("  Brim                : yes");
         echo("  Perimeters          : 3");
         echo("  Solid bottom layers : 8");
         echo("  Solid top layers    : 8");

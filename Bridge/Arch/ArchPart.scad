@@ -1,10 +1,10 @@
-use<BridgeSegments.scad>
-use<SegmentCutPosition.scad>
-include <Bridge.inc>
-use <ArchTenon.scad>
-use <CableAttachment.scad>
-use <CrossBeamArchScrew.scad>
-use <SeperateBeamScrew.scad>
+include <../../Bridge.inc>
+use     <../BridgeSegments.scad>
+use     <../CableAttachment.scad>
+use     <../CrossBeamArchScrew.scad>
+use     <../SegmentCutPosition.scad>
+use     <../Arch/ArchTenon.scad>
+use     <../SeparatorBeam/SeperatorBeamScrew.scad>
 
 explode_displacement = 2;
 for (arch_index = [0 : bridge_arch_segment_count() - 1]) {

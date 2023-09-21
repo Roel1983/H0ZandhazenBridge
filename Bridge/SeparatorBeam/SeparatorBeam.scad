@@ -1,6 +1,6 @@
-use<BridgeSegments.scad>
-include <Bridge.inc>
-use<SeperateBeamScrew.scad>
+include <../../Bridge.inc>
+use     <../BridgeSegments.scad>
+use     <../SeparatorBeam/SeperatorBeamScrew.scad>
 
 %Bridge(colored=false);
 for (index = [0 : bridge_beam_count - 1]) {

@@ -1,8 +1,8 @@
-include <Utils.inc>
-include <Bridge.inc>
-use <Mortise.scad>
-use <SegmentCutPosition.scad>
-use <BridgeSegments.scad>
+use     <../../Misc/Mortise.scad>
+include <../../Misc/Utils.inc>
+include <../../Bridge.inc>
+use     <../BridgeSegments.scad>
+use     <../SegmentCutPosition.scad>
 
 mortise_config = mortise_config(
     length  = 45,

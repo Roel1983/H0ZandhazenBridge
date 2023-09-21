@@ -1,5 +1,5 @@
-include <Bridge.inc>
-include <Utils.inc>
+include <../Bridge.inc>
+include <../Misc/Utils.inc>
 use <SegmentCutPosition.scad>
 
 explode_displacement = 2.0;

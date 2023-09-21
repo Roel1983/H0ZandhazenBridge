@@ -1,8 +1,8 @@
-use <ArchPart.scad>
-use <ArchTenon.scad>
-use <CrossBeamPart.scad>
-use <CrossBeamTenon.scad>
-use <SeparatorBeam.scad>
+use <Arch/ArchPart.scad>
+use <Arch/ArchTenon.scad>
+use <CrossBeam/CrossBeamPart.scad>
+use <CrossBeam/CrossBeamTenon.scad>
+use <SeparatorBeam/SeparatorBeam.scad>
 
 explode_displacement = 25;
 

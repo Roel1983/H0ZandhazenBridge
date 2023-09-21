@@ -1,4 +1,4 @@
-include <Bridge.inc>
+include <../Bridge.inc>
 
 %Bridge(colored = false);
 for (index = [0 : bridge_cable_count - 1]) {
