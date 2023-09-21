@@ -52,7 +52,7 @@ module ArchPart(arch_index, explode_displacement = 0.0) {
         for (index = [0:bridge_beam_count-1]) {
             p = arch_separator_beam_position(index);
             if (is_between(p[X], [from_x, to_x])) {
-                SeperateBeamScrew(index);
+                SeperateBeamScrewHole(index);
             }
         }
     }

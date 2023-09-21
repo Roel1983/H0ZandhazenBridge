@@ -76,6 +76,7 @@ function bridge_arch_inner_center_distance(i) = (
 
 // Arch separator beam functions
 function arch_separator_beam_position(beam_nr) = (
+    assert(beam_nr >= 0 && beam_nr < bridge_beam_count, str("beam_nr = ", beam_nr))
     let(p = bridge_arch_center_point(bridge_beam_locations[beam_nr]))
     [p[X], 0, p[Y]]
 );
