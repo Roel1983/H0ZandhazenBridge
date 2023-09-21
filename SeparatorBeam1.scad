@@ -3,7 +3,7 @@ include <Bridge.inc>
 
 SeparatorBeam1(true);
 
-module SeparatorBeam1(printable = false, exploded_view = 0.0) {
+module SeparatorBeam1(printable = false, explode_displacement = 0.0) {
     SEPARATOR_BEAM_NUMBER = 1;
     
     if(printable) {
@@ -11,7 +11,7 @@ module SeparatorBeam1(printable = false, exploded_view = 0.0) {
             translate(-separator_beam_segment_center(SEPARATOR_BEAM_NUMBER)) Part();
         }
     } else {
-        translate(separator_beam_segment_explode_displacement(SEPARATOR_BEAM_NUMBER, exploded_view)) {
+        translate(bridge_separator_beam_segment_explode_displacement(SEPARATOR_BEAM_NUMBER) * explode_displacement) {
             Part();
         }
     }

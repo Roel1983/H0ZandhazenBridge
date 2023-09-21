@@ -3,10 +3,10 @@ include <Bridge.inc>
 use <PrintBed.scad>
 use <ArchPart.scad>
 
-ArchPart0(true);
+ArchPart4(true);
 
-module ArchPart0(printable = false, explode_displacement = 0.0) {
-    CROSS_BEAM_NUMBER = 0;
+module ArchPart4(printable = false, explode_displacement = 0.0) {
+    CROSS_BEAM_NUMBER = 4;
     
     if(printable) {
         echo("PRINTING INSTRUCTIONS");
@@ -18,7 +18,7 @@ module ArchPart0(printable = false, explode_displacement = 0.0) {
         echo("  Solid top layers    : 8");
         echo("  Modifiers           : TODO reenforcment");
         
-        translate([mm(0), mm(-5), bridge_arch_width / 2]) rotate(-32) {
+        translate([mm(0), mm(-5), bridge_arch_width / 2]) rotate(32) {
             rotate(bridge_arch_angle - 180, VEC_X) {
                 translate(-bridge_arch_segment_origin(CROSS_BEAM_NUMBER)) {
                     ArchPart(CROSS_BEAM_NUMBER);

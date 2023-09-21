@@ -132,6 +132,8 @@ function cable_top_angle_vec_y(cable_nr) = (cable_bottom_angle_vec_y(cable_nr) -
 function cable_top_angle_vec_x(cable_nr) = (cable_bottom_angle_vec_x(cable_nr));
 
 module cable_bottom_transpose(cable_nr) {
+    assert(is_num(cable_nr));
+    assert(cable_nr >= 0 && cable_nr < bridge_cable_count, str("cable_nr = ", cable_nr));
     translate(cable_bottom_position(cable_nr)) {
         rotate(cable_bottom_angle_vec_x(cable_nr), VEC_X) {
             rotate(cable_bottom_angle_vec_y(cable_nr), VEC_Y) {

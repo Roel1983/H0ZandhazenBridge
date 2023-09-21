@@ -1,18 +1,19 @@
 use<BridgeSegments.scad>
 include <Bridge.inc>
 use <PrintBed.scad>
+use<BridgeSegments.scad>
+include <Bridge.inc>
+use <PrintBed.scad>
+use <ArchPart.scad>
 
 ArchPart1(true);
 
-module ArchPart1(printable = false, exploded_view = 0.0) {
+module ArchPart1(printable = false, explode_displacement = 0.0) {
     CROSS_BEAM_NUMBER = 1;
     
     if(printable) {
-        echo("QUANTITY");
-        echo("  2 x normal");
-        echo("  2 x mirrored on x-axis");
-        echo();
         echo("PRINTING INSTRUCTIONS");
+        echo("  Quantity            : 2");
         echo("  Layer height        : 0.1 mm");
         echo("  Infill              : 10%");
         echo("  Perimeters          : 3");
@@ -20,19 +21,15 @@ module ArchPart1(printable = false, exploded_view = 0.0) {
         echo("  Solid top layers    : 8");
         echo("  Modifiers           : TODO reenforcment");
         
-        translate([mm(0),mm(10), bridge_arch_width / 2]) rotate(-15) {
+        translate([mm(0), mm(-5), bridge_arch_width / 2]) rotate(-15) {
             rotate(bridge_arch_angle - 180, VEC_X) {
-                translate(-arch_segment_center(CROSS_BEAM_NUMBER)) Part();
+                translate(-bridge_arch_segment_origin(CROSS_BEAM_NUMBER)) {
+                    ArchPart(CROSS_BEAM_NUMBER);
+                }
             }
         }
         PrintBed();
     } else {
-        translate(arch_segment_explode_displacement(CROSS_BEAM_NUMBER, exploded_view)) {
-            Part();
-        }
-    }
-    
-    module Part() {
-        ArchSegment(CROSS_BEAM_NUMBER);
+        ArchPart(CROSS_BEAM_NUMBER, explode_displacement);
     }
 }

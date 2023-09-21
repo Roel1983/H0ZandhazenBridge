@@ -19,6 +19,7 @@ function scaled(x)   = x * SCALE;
 function unscaled(x) = x / SCALE;
 
 // Util functions
+function is_def(arg) = !is_undef(arg);
 function round_decimals(x, decimal = 4, base = 10) = (
     let(k = pow(base, ceil(ln(x) / ln(base)) - decimal))
     round(x / k) * k
@@ -50,4 +51,40 @@ function is_between(i, range) = (
 module mirror_copy(vec) {
     children();
     mirror(vec) children();
+}
+
+// Debug tools
+module PrintOnScreen(relative_size = 1.0) {
+    if ($preview) color("black") {
+        effective_size = $vpd / 1000 * relative_size;
+        
+        
+        rotate($vpr[Z], VEC_Z) rotate($vpr[Y], VEC_Y) rotate($vpr[X], VEC_X) {
+            //linear_extrude(1000) square(effective_size * 2, true);
+            //translate([0, 0, 1000]) 
+                scale(effective_size) children();
+        }
+    }
+}
+
+module OrientationArrows(size = undef, relative_size = 1.0) {
+    effective_size = is_def(size) ? (
+        size
+    ) : (
+        $vpd / 50 * relative_size
+    );
+    arrow_h  = 1.0 * effective_size;
+    arrow_d1 = 0.1 * effective_size;
+    arrow_d2 = 0.3 * effective_size;
+    
+    if ($preview) {
+        color("red")   rotate(90, VEC_Y)  Arrow();
+        color("green") rotate(-90, VEC_X) Arrow();
+        color("blue")  Arrow();
+    }
+    
+    module Arrow() {
+        cylinder(d = arrow_d1, h = arrow_h);
+        translate([0, 0, arrow_h]) cylinder(d1 = arrow_d2, d2 = 0, h = arrow_d2);
+    }
 }
