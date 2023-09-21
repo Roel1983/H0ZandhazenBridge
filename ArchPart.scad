@@ -4,6 +4,7 @@ include <Bridge.inc>
 use <ArchTenon.scad>
 use <CableAttachment.scad>
 use <CrossBeamArchScrew.scad>
+use <SeperateBeamScrew.scad>
 
 explode_displacement = 2;
 for (arch_index = [0 : bridge_arch_segment_count() - 1]) {
@@ -48,5 +49,11 @@ module ArchPart(arch_index, explode_displacement = 0.0) {
         }
     }
     module SeperateBeamScrews() {
+        for (index = [0:bridge_beam_count-1]) {
+            p = arch_separator_beam_position(index);
+            if (is_between(p[X], [from_x, to_x])) {
+                SeperateBeamScrew(index);
+            }
+        }
     }
 }

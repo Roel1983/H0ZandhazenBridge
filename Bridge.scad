@@ -55,9 +55,15 @@ function bridge_arch_thickness(i) = (
     + bridge_arch_thickness_bottom * (1 - f)
 );
 
-function bridge_arch_outer_point(i, offset = 0)  = bridge_arch(i, offset = bridge_arch_thickness(i) + offset);
+function bridge_arch_outer_point(i, offset = 0)  = (
+    assert(is_num(offset))
+    bridge_arch(i, offset = bridge_arch_thickness(i) + offset)
+);
 function bridge_arch_center_point(i) = bridge_arch(i, offset = bridge_arch_thickness(i) / 2);
-function bridge_arch_inner_point(i, offset = 0)  = bridge_arch(i, offset = -offset);
+function bridge_arch_inner_point(i, offset = 0)  = (
+    assert(is_num(offset))
+    bridge_arch(i, offset = -offset)
+);
 
 function bridge_arch_center_center_distance(i) = (
     let(j = bridge_arch_center_point(i)[Y] / bridge_arch_outer_point(0)[Y])
