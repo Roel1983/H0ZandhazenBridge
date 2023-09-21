@@ -14,6 +14,34 @@ module ArchPart(arch_index, explode_displacement = 0.0) {
     translate(bridge_arch_segment_explode_displacement(arch_index) * explode_displacement) {
         difference() {
             ArchSegment(arch_index);
+            Mortises();
+            CableAttachments();
+            ArchScrew();
+            SeperateBeamScrews();
         }
+    }
+    
+    is_first_arch_segment = (arch_index == 0);
+    is_last_arch_segment  = (arch_index == bridge_arch_segment_count() - 1);
+    from_x = bridge_arch_segment_cut_location(arch_index + 0)[X];
+    to_x   = bridge_arch_segment_cut_location(arch_index + 1)[X];
+    
+    module ArchScrew() {
+        //if (is_first_arch_segment) CrossBeamArchScrew(0);
+        //if (is_last_arch_segment)  CrossBeamArchScrew(1);
+    }
+    module Mortises() {
+        if (!is_first_arch_segment) ArchMortise(arch_index - 1);
+        if (!is_last_arch_segment)  ArchMortise(arch_index);
+    }
+    module CableAttachments() {
+        for (cable_index = [0:bridge_cable_count-1]) {
+            p = cable_top_position(cable_index);
+            if (is_between(p[X], [from_x, to_x])) {
+                CableTopAttachment(cable_index);
+            }
+        }
+    }
+    module SeperateBeamScrews() {
     }
 }

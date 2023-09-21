@@ -18,8 +18,8 @@ CrossBeamTenon(2);
 module CrossBeamTenon(index = 0, explode_displacement = 0.0) {
     translate(bridge_cross_beam_tenon_explode_displacement(index) * explode_displacement) {
         cross_beam_mortise_transform(index) {
-            union() {
-                render() Tenon(mortise_config);
+            render() union() {
+                Tenon(mortise_config);
                 mirror(VEC_Y) Tenon(mortise_config);
             }
         }
@@ -28,7 +28,7 @@ module CrossBeamTenon(index = 0, explode_displacement = 0.0) {
 
 module CrossBeamMortise(index) {
     cross_beam_mortise_transform(index) {
-        union() {
+        render() union() {
             Mortise(mortise_config);
             mirror(VEC_Y)Mortise(mortise_config);
         }
