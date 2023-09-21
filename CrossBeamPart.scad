@@ -4,8 +4,9 @@ include <Bridge.inc>
 use <CrossBeamTenon.scad>
 use <CableAttachment.scad>
 use <CrossBeamArchScrew.scad>
+use <CrossBeamTableScrew.scad>
 
-explode_displacement = 2;
+explode_displacement = 0;
 for (cross_beam_index = [0 : bridge_cross_beam_segment_count() - 1]) {
     CrossBeamPart(cross_beam_index, explode_displacement);
 }
@@ -19,6 +20,7 @@ module CrossBeamPart(cross_beam_index, explode_displacement = 0.0) {
             ArchScrew();
             TableScrew();
         }
+        
     }
     
     is_first_cross_beam_segment = (cross_beam_index == 0);
@@ -43,7 +45,7 @@ module CrossBeamPart(cross_beam_index, explode_displacement = 0.0) {
         }
     }
     module TableScrew() {
-        //if (is_first_cross_beam_segment) CrossBeamTableScrew(0);
-        //if (is_last_cross_beam_segment)  CrossBeamTableScrew(1);
+        if (is_first_cross_beam_segment) CrossBeamTableScrew(0);
+        if (is_last_cross_beam_segment)  CrossBeamTableScrew(1);
     }
 }

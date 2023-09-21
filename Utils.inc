@@ -53,6 +53,15 @@ module mirror_copy(vec) {
     mirror(vec) children();
 }
 
+module mirror_if(condition, vec) {
+    assert(is_bool(condition));
+    if(condition) {
+        mirror(vec) children();
+    } else {
+        children();
+    }
+}
+
 // Shapes
 module Hex(d) {
     intersection_for(a = [30,90,150]) rotate(a) square([d, d*2], true);
