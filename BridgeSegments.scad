@@ -65,12 +65,12 @@ function bridge_arch_segment_explode_displacement(index) = (
     )
 );
 
-module ArchSegment(index, offset_xz = 0, offset_y = 0) {
+module ArchSegment(index, offset_xz = 0, offset_y = 0, low_poly = false) {
     assert(index >= 0 && index < bridge_arch_segment_count());
 
     difference() {
         intersection() {
-            render(2) Arch(offset_xz = offset_xz);
+            render(2) Arch(offset_xz = offset_xz, low_poly = low_poly);
             render(0) CutArea();
         }
         if(index == 0 || index == bridge_arch_segment_count() - 1) {

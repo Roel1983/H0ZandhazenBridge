@@ -53,6 +53,11 @@ module mirror_copy(vec) {
     mirror(vec) children();
 }
 
+// Shapes
+module Hex(d) {
+    intersection_for(a = [30,90,150]) rotate(a) square([d, d*2], true);
+}
+
 // Debug tools
 module PrintOnScreen(relative_size = 1.0) {
     if ($preview) color("black") {

@@ -3,6 +3,7 @@ use<SegmentCutPosition.scad>
 include <Bridge.inc>
 use <CrossBeamTenon.scad>
 use <CableAttachment.scad>
+use <CrossBeamArchScrew.scad>
 
 explode_displacement = 2;
 for (cross_beam_index = [0 : bridge_cross_beam_segment_count() - 1]) {
@@ -26,8 +27,8 @@ module CrossBeamPart(cross_beam_index, explode_displacement = 0.0) {
     to_x   = bridge_cross_beam_segment_cut_location(cross_beam_index + 1)[X];
     
     module ArchScrew() {
-        //if (is_first_cross_beam_segment) CrossBeamArchScrew(0);
-        //if (is_last_cross_beam_segment)  CrossBeamArchScrew(1);
+        if (is_first_cross_beam_segment) CrossBeamArchScrewHole(0);
+        if (is_last_cross_beam_segment)  CrossBeamArchScrewHole(1);
     }
     module Mortises() {
         if (!is_first_cross_beam_segment) CrossBeamMortise(cross_beam_index - 1);

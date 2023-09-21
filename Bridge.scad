@@ -198,9 +198,9 @@ module Arches() {
     }
 }
 
-module Arch(offset_xz = 0, offset_y = 0) {
+module Arch(offset_xz = 0, offset_y = 0, low_poly = false) {
     intersection() {
-        ArchSideViewExtruded(offset_xz = offset_xz, offset_y = offset_y);
+        ArchSideViewExtruded(offset_xz = offset_xz, offset_y = offset_y, low_poly = low_poly);
         ArchFrontViewExtruded(offset_xz = offset_xz, offset_y = offset_y);
     }
 }
@@ -230,18 +230,18 @@ module ArchFrontViewExtruded(offset_xz = 0, offset_y = 0) {
     }
 }
 
-module ArchSideViewExtruded(offset_xz = 0, offset_y = 0) {
+module ArchSideViewExtruded(offset_xz = 0, offset_y = 0, low_poly = false) {
     rotate(90, VEC_X) {
         linear_extrude(
             bridge_bounding_width * 1.1, center = true, convexity = 2
         ) {
-            ArchSideView();
+            ArchSideView(low_poly = low_poly);
         }
     }
-    module ArchSideView() {
+    module ArchSideView(low_poly = false) {
         f = 1.05;
         g = bridge_arch_outer_point(f)[X];
-        step = $preview ? 0.1 : 0.001;
+        step = (low_poly || $preview) ? 0.1 : 0.001;
         points = concat(
             [for(i = [-1.0 : step : 1.0]) bridge_arch_outer_point(i * f, offset = offset_xz)],
             [for(i = [ 1.0 :-step :-1.0]) bridge_arch_inner_point(i * f, offset = offset_xz)]
