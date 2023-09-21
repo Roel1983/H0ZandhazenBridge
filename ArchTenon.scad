@@ -25,11 +25,13 @@ mortise_configs = [
     mortise_config1
 ];
 
-module ArchTenon(index) {
-    arch_mortise_transform(index) {
-        render() union() {
-            Tenon(mortise_configs[index]);
-            translate([0,0.001]) mirror(VEC_Y) Tenon(mortise_configs[index]);
+module ArchTenon(index, explode_displacement=0.0) {
+    translate(bridge_cross_beam_tenon_explode_displacement(index) * explode_displacement) {
+        arch_mortise_transform(index) {
+            render() union() {
+                Tenon(mortise_configs[index]);
+                translate([0,0.001]) mirror(VEC_Y) Tenon(mortise_configs[index]);
+            }
         }
     }
 }
@@ -55,3 +57,8 @@ module arch_mortise_transform(index) {
         }
     }
 }
+
+function bridge_cross_beam_tenon_explode_displacement(index) = between(
+    bridge_arch_segment_explode_displacement(index),
+    bridge_arch_segment_explode_displacement(index + 1)
+);
