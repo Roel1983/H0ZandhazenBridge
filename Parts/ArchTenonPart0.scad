@@ -1,15 +1,15 @@
 include <../Bridge.inc>
 use     <../Misc/PrintBed.scad>
 use     <../Bridge/BridgeSegments.scad>
-use     <../Bridge/CrossBeam/CrossBeamTenon.scad>
+use     <../Bridge/Arch/ArchTenon.scad>
 
-CrossBeamTenonPart();
+ArchTenonPart0();
 
-module CrossBeamTenonPart() {
+module ArchTenonPart0() {
     CROSS_BEAM_NUMBER = 0;
     
     echo("PRINTING INSTRUCTIONS");
-    echo("  Quantity            : 6");
+    echo("  Quantity            : 4");
     echo("  Layer height        : 0.15 mm");
     echo("  Infill              : 15%");
     echo("  Brim                : no");
@@ -18,10 +18,10 @@ module CrossBeamTenonPart() {
     echo("  Solid top layers    : 8");
     echo("  Modifiers           : TODO reenforcment");
     
-    translate([mm(0), mm(0), mm(1)]) {
-        rotate(90, VEC_X) {
-            translate(-bridge_cross_beam_tenon_origin(0)) {
-                CrossBeamTenon(0);
+    translate([mm(0), mm(-5), mm(5)]) rotate(-25) {
+        rotate(bridge_arch_angle - 180, VEC_X) {
+            translate(-bridge_arch_tenon_origin(CROSS_BEAM_NUMBER)) {
+                ArchTenon(CROSS_BEAM_NUMBER);
             }
         }
     }
