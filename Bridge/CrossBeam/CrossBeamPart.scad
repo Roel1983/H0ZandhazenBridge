@@ -29,8 +29,8 @@ module CrossBeamPart(cross_beam_index, explode_displacement = 0.0) {
     to_x   = bridge_cross_beam_segment_cut_location(cross_beam_index + 1)[X];
     
     module ArchScrew() {
-        if (is_first_cross_beam_segment) CrossBeamArchScrewHole(0);
-        if (is_last_cross_beam_segment)  CrossBeamArchScrewHole(1);
+        if (is_first_cross_beam_segment) CrossBeamArchScrewHole(0, nut = false);
+        if (is_last_cross_beam_segment)  CrossBeamArchScrewHole(1, nut = false);
     }
     module Mortises() {
         if (!is_first_cross_beam_segment) CrossBeamMortise(cross_beam_index - 1);

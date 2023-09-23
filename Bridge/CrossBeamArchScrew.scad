@@ -1,4 +1,5 @@
 include <../Bridge.inc>
+use     <../Misc/M4CounterSunkScrew.scad>
 
 %Bridge(colored = false);
 
@@ -7,14 +8,14 @@ position = 0.995;
 CrossBeamArchScrewHole(0);
 CrossBeamArchScrewHole(1);
 
-module CrossBeamArchScrewHole(index) {
+module CrossBeamArchScrewHole(index, screw = true, nut = true) {
     CrossBeamArchScrewTranspose(index) {
-        cylinder(d = 3.1, h = 40, center = true, $fn = 32);
-        translate([0, 0, mm(-5)]) mirror(VEC_Z)cylinder(d = 6.2, h = 20, $fn = 32);
-        translate([0, 0, mm(7)]) linear_extrude(2.5) {
-            hull() {
-                Hex(mm(5.5));
-                translate([-10, 0])Hex(mm(5.5));
+        mirror_if(index == 1, VEC_Z) { 
+            if (screw) translate([0,0, -8]) {
+                M4CounterSunkScrewHole(length = mm(22), bias = 15);
+            }
+            if (nut) translate([0,0,  9]) {
+                rotate(180) M4NutSlot(slot_length = mm(5));
             }
         }
     }
