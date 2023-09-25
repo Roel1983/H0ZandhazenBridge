@@ -13,10 +13,10 @@ ArchMortise(3);
 base_mortise_config = mortise_config(
     length  = 45,
     width_1 = 10, width_2 = 6,
-    thickness_1 = 8, thickness_2 = 6
+    thickness_1 = 10, thickness_2 = 7
 );
-mortise_config1 = mortise_config(base_mortise_config, r = 500, length  = 53);
-mortise_config2 = mortise_config(base_mortise_config, r = 700, length  = 47);
+mortise_config1 = mortise_config(base_mortise_config, r = 700, length  = 30);
+mortise_config2 = mortise_config(base_mortise_config, r = 700, length  = 30);
 
 mortise_configs = [
     mortise_config1,

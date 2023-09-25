@@ -26,7 +26,7 @@ if ($preview) {
 // Config
 separator_beam_wall         = nozzle(2);
 separator_beam_tolerance    = mm(0.1);
-arch_crossbeam_tolerance_xz = mm(0.1);
+arch_crossbeam_tolerance_xz = mm(0.0);
 arch_crossbeam_tolerance_y  = mm(0.1);
 
 // Bridge arch (printable sized) segment

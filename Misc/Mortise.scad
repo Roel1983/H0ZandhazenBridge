@@ -58,10 +58,10 @@ default_mortise_config = mortise_config(
     tight_length =       6.0,
     bevel =              1.0,
     r =                  undef,
-    tolerance_side =    -0.0,
-    tolerance_bottom =   0.0,
+    tolerance_side =     0.1,
+    tolerance_bottom =   0.05,
     tolerance_top =      1.0,
-    tolerance_bevel =   -0.1
+    tolerance_bevel =   -0.05
 );
 echo(mortise_config(default_mortise_config, r = 10));
 

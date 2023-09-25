@@ -21,7 +21,7 @@ bridge_beam_indent           = scaled(m(.5));
 bridge_cross_beam_width      = scaled(m(4.0));
 bridge_cross_beam_height     = scaled(m(4.7));
 
-bridge_deck_thickness        = mm( 4.0);
+bridge_deck_thickness        = mm( 4.15);
 bridge_deck_indent           = mm( 5.0);
 bridge_deck_rim_thickness    = mm( 1.5);
 

@@ -33,8 +33,8 @@ module ArchPart(arch_index, explode_displacement = 0.0) {
     to_x   = bridge_arch_segment_cut_location(arch_index + 1)[X];
     
     module ArchScrew() {
-        if (is_first_arch_segment) CrossBeamArchScrewHole(0);
-        if (is_last_arch_segment)  CrossBeamArchScrewHole(1);
+        if (is_first_arch_segment) CrossBeamArchScrewHole(0, max_overhang_angle = 60);
+        if (is_last_arch_segment)  CrossBeamArchScrewHole(1, max_overhang_angle = 60);
     }
     module Mortises() {
         if (!is_first_arch_segment) ArchMortise(arch_index - 1);

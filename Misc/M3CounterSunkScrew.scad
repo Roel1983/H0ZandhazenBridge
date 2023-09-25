@@ -2,7 +2,7 @@ include <Utils.inc>
 
 m3_nut_diameter   = mm(5.5);
 m3_nut_height     = mm(2.5);
-m3_shaft_diameter = mm(3.0);
+m3_shaft_diameter = mm(3.2);
 m3_counter_sunk_head_diameter = mm(5.5);
 m3_counter_sunk_depth         = mm(0.5);
 
@@ -13,7 +13,7 @@ difference() {
         translate([0, 0, mm(4.7)])M3NutHole();
     }
     translate([mm(12),0,4]) rotate(-90, VEC_Y){
-        M3CounterSunkScrewHole();
+        rotate(-90) M3CounterSunkScrewHole(max_overhang_angle = 60);
         translate([0, 0, mm(2)])M3NutSlot();
     }
 }
@@ -21,7 +21,6 @@ difference() {
 module M3NutHole(center = false) {
     linear_extrude(m3_nut_height, center = center) {
         Hex(m3_nut_diameter);
-
     }
 }
 module M3NutSlot(center = false, slot_length = mm(0.0)) {
@@ -35,10 +34,12 @@ module M3NutSlot(center = false, slot_length = mm(0.0)) {
 }
 
 module M3CounterSunkScrewHole(
-    length = mm(10.0),
-    bias   = mm( 0.1)
+    length             = mm(10.0),
+    bias               = mm( 0.1),
+    max_overhang_angle = 90,
+    $fn = 32
 ) {
-    rotate_extrude($fn=32) polygon([
+    rotate_extrude() polygon([
         [
             0,
             -bias
@@ -52,11 +53,12 @@ module M3CounterSunkScrewHole(
             m3_shaft_diameter / 2,
             m3_counter_sunk_depth + (m3_counter_sunk_head_diameter - m3_shaft_diameter) / 2
         ], [
-            m3_shaft_diameter / 2,
-            length
-        ], [
             0,
-            length
+            m3_counter_sunk_depth + (m3_counter_sunk_head_diameter - m3_shaft_diameter) / 2
         ]
     ]); 
+    linear_extrude(length) {
+        Droplet(d = m3_shaft_diameter, a = max_overhang_angle);
+    }
 }
+

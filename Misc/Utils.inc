@@ -67,6 +67,16 @@ module Hex(d) {
     intersection_for(a = [30,90,150]) rotate(a) square([d, d*2], true);
 }
 
+module Droplet(d, a) {
+    hull() {
+        circle(d = d);
+        intersection() {
+            rotate(a)square(d / 2);
+            mirror(VEC_X) rotate(a)square(d / 2);
+        }
+    }
+}
+
 // Debug tools
 module PrintOnScreen(relative_size = 1.0) {
     if ($preview) color("black") {
