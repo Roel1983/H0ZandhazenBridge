@@ -2,7 +2,6 @@ X = 0;
 Y = 1;
 Z = 2;
 
-//TODO reenforcment
 mortise_config = mortise_config(r=undef);
 
 %render()difference() {
@@ -54,7 +53,7 @@ default_mortise_config = mortise_config(
     width_2 =            7.0,
     thickness_1 =        6.0,
     thickness_2 =        4.0,
-    notch =             [1.5, 0.2],
+    notch =             [1.5, 0.1],
     tight_length =       6.0,
     bevel =              1.0,
     r =                  undef,
@@ -133,16 +132,15 @@ module MortiseAndTenon(
     }
     module SlideSlots() {
         rotate(90, [1,0,0]) {
-            linear_extrude(12, center = true) {
-                SlideSlot_2d(offset_x =  width_2 / 2 - (1 / 2) - (2 * 0.4));
-                SlideSlot_2d(offset_x = -width_2 / 2 + (1 / 2) + (2 * 0.4));
+            linear_extrude(max(thickness_1, thickness_2) * 2.1, center = true) {
+                SlideSlot_2d(offset_x =  0);
             }
         }
         module SlideSlot_2d(
             offset_x
         ) {
             polygon(slide_slot_points(
-                length = tight_length * 3/5,,
+                length = length * 2/3,
                 width  = 1,
                 r_error = 0.1,
                 offset = [
