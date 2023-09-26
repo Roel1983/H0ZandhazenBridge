@@ -302,9 +302,12 @@ module CrossBeam() {
 }
 
 module CrossBeamProfile() {
+    rim = [mm(0.2), mm(1.0)];
     polygon([
         [0, bridge_cross_beam_bottom],
-        [0, -bridge_deck_thickness],
+        [0, -bridge_deck_thickness + rim[0]],
+        [rim[1], -bridge_deck_thickness + rim[0]],
+        [rim[1], -bridge_deck_thickness],
         [bridge_deck_indent, -bridge_deck_thickness],
         [bridge_deck_indent, 0],
         [0, 0],
