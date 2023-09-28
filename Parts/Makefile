@@ -21,6 +21,13 @@ SLICER                  ?= PrusaSlicer
 .PHONY: all
 all: all_gcodes all_parts
 
+test:
+	@if [ ArchPart4.scad -nt ArchTenonPart.3mf ]; then\
+	  echo "Hello world";\
+	else \
+	  echo "Good bye";\
+	fi
+ 
 .PHONY: all_gcodes
 all_gcodes: $(PRINTABLE_PARTS:%=$(GCODEDIR)/%$(GCODE_EXTENSION))
 
@@ -43,10 +50,15 @@ $(PARTSDIR)/%$(PART_DESTINATION_EXTENSION): %$(PART_SOURCE_EXTENSION) | $(DEPDIR
 	mkdir -p $(DEPDIR)/$(dir $*)
 	mkdir -p $(PARTSDIR)/$(dir $*)
 	$(OPENSCAD) -d $(DEPDIR)/$*.d $(OPENSCAD_ARGS) -D "IS_PART=1" $(OPENSCAD_ADDITION_ARGS) -o $(PARTSDIR)/$*$(PART_DESTINATION_EXTENSION) $*$(PART_SOURCE_EXTENSION)
+	rm $(GCODEDIR)/$*$(GCODE_EXTENSION) # make sure we do not fall in to the trap of using outdated gcode!!!
 
 $(GCODEDIR)/%$(GCODE_EXTENSION): %$(SLICE_PROJECT_FILE) $(PARTSDIR)/%$(PART_DESTINATION_EXTENSION) 
-	mkdir -p $(GCODEDIR)/$(dir $*)
-	$(SLICER) $< --export-gcode -o $@
+	@if [ $*$(SLICE_PROJECT_FILE) -nt $(PARTSDIR)/$*$(PART_DESTINATION_EXTENSION) ]; then\
+	  mkdir -p $(GCODEDIR)/$(dir $*); \
+	  $(SLICER) $< --export-gcode -o $@; \
+	else \
+	  echo "Skipped slicing $*, project was not updated";\
+	fi
 
 DEPFILES := $(PARTS:%=$(DEPDIR)/%.d) $(IMAGES:%=$(DEPDIR)/%.d)
 $(DEPFILES):

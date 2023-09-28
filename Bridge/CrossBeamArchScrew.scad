@@ -36,7 +36,7 @@ module CrossBeamArchScrewTranspose(index) {
             } else if (index == 1) {
                 translate(bridge_arch_center_point(position)) {
                     rotate(bridge_arch_angle(position), VEC_Z) {
-                        rotate(90, VEC_Y) translate([-1, 0]) mirror(VEC_X) children();
+                        rotate(90, VEC_Y) translate([-1, 0]) children();
                     }
                 }
             }
